@@ -51,8 +51,8 @@ angular.module('myApp', ['angular-img-cropper']);
 | min-width (*optional*) | The minimum width that the crop area can be set to.
 | min-height (*optional*) | The minimum height that the crop area can be set to.
 | cors (*optional*) |  Allows images loaded from foreign origins to be used in canvas as if they were being loaded from the current origin ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image)). *Default: no*
-| responsive (*optional*) |  Allows canvas to be responsive, width will depend on parent element's width, height will be created by proportion of old width/old height.
-| responsive-parent (*optional*) |  If responsive is used. Id of element from that will canvas width depend on.
+| responsive (*optional*) |  Allows canvas to be responsive, parent element will define canvas's width (if responsive-parent isn't set), height will be created by proportion of old width/old height.
+| responsive-parent (*optional*) |  If responsive is used. Id of an element that defines canvas's width.
 
 ## Example usage
 
