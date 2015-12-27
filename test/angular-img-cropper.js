@@ -1260,7 +1260,7 @@ angular.module('angular-img-cropper', []).directive("imageCropper", ['$document'
                 window.onresize = function(){
                     if (typeof responsive != 'undefined' && responsive) {
                         var resizedWidth = window.getComputedStyle(canvas.parentNode).width.split('px').join();
-                        var resizedHeight = window.getComputedStyle(canvas.parentNode).height.split('px').join();
+                        var resizedHeight = (resizedWidth * canvas.height) / canvas.width;
                         canvas.setAttribute('width', resizedWidth);
                         canvas.setAttribute('height', resizedHeight);
                         var oldImage = crop.srcImage;
