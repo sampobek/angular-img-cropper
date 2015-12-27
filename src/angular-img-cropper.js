@@ -1245,30 +1245,40 @@ angular.module('angular-img-cropper', []).directive("imageCropper", ['$document'
                 var responsive = scope.responsive;
                 crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
 
+                var oldWidth = canvas.width;
+                var oldHeight = canvas.height;
                 if (typeof responsive != 'undefined' && responsive) {
-                    var newWidth = window.getComputedStyle(canvas.parentNode).width.split('px').join();
-                    var newHeight = window.getComputedStyle(canvas.parentNode).height.split('px').join();
-                    canvas.setAttribute('width', newWidth);
-                    canvas.setAttribute('height', newHeight);
                     var oldImage = crop.srcImage;
-                    crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
-                    if (typeof oldImage != 'undefined' && oldImage) {
-                        crop.setImage(oldImage);
-                    }
-                }
-
-                window.onresize = function(){
                     if (typeof responsive != 'undefined' && responsive) {
                         var resizedWidth = window.getComputedStyle(canvas.parentNode).width.split('px').join();
-                        var resizedHeight = (resizedWidth * canvas.height) / canvas.width;
+                        var resizedHeight = Math.round((parseInt(resizedWidth) * oldHeight) / oldWidth);
                         canvas.setAttribute('width', resizedWidth);
                         canvas.setAttribute('height', resizedHeight);
-                        var oldImage = crop.srcImage;
+                        delete crop;
                         crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
                         if (typeof oldImage != 'undefined' && oldImage) {
                             crop.setImage(oldImage);
                         }
                     }
+                }
+
+                var doit;
+                window.onresize = function(){
+                    clearTimeout(doit);
+                    doit = setTimeout(function(){
+                        var oldImage = crop.srcImage;
+                        if (typeof responsive != 'undefined' && responsive) {
+                            var resizedWidth = window.getComputedStyle(canvas.parentNode).width.split('px').join();
+                            var resizedHeight = Math.round((parseInt(resizedWidth) * oldHeight) / oldWidth);
+                            canvas.setAttribute('width', resizedWidth);
+                            canvas.setAttribute('height', resizedHeight);
+                            delete crop;
+                            crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
+                            if (typeof oldImage != 'undefined' && oldImage) {
+                                crop.setImage(oldImage);
+                            }
+                        }
+                    }, 100);
                 }
             });
 
