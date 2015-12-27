@@ -10,7 +10,8 @@ angular.module('angular-img-cropper', []).directive("imageCropper", ['$document'
             cropAreaBounds: "=",
             minWidth: "=",
             minHeight: "=",
-            responsive: "="
+            responsive: "=",
+            responsiveParent: "="
         },
         restrict: "A",
         link: function (scope, element) {
@@ -1243,22 +1244,20 @@ angular.module('angular-img-cropper', []).directive("imageCropper", ['$document'
                 var keepAspect = scope.keepAspect;
                 var touchRadius = scope.touchRadius;
                 var responsive = scope.responsive;
+                var responsiveParent = scope.responsiveParent;
                 crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
 
                 var oldWidth = canvas.width;
                 var oldHeight = canvas.height;
                 if (typeof responsive != 'undefined' && responsive) {
-                    var oldImage = crop.srcImage;
-                    if (typeof responsive != 'undefined' && responsive) {
-                        var resizedWidth = window.getComputedStyle(canvas.parentNode).width.split('px').join();
-                        var resizedHeight = Math.round((parseInt(resizedWidth) * oldHeight) / oldWidth);
-                        canvas.setAttribute('width', resizedWidth);
-                        canvas.setAttribute('height', resizedHeight);
+                    var parent = typeof responsiveParent != 'undefined' && responsiveParent ? document.getElementById(responsiveParent) :  canvas.parentNode;
+                    var newWidth = window.getComputedStyle(parent).width.split('px').join();
+                    if (newWidth != 'auto' || newWidth != '100%') {
+                        var newHeight = Math.round((parseInt(newWidth) * oldHeight) / oldWidth);
+                        canvas.setAttribute('width', newWidth);
+                        canvas.setAttribute('height', newHeight);
                         delete crop;
                         crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
-                        if (typeof oldImage != 'undefined' && oldImage) {
-                            crop.setImage(oldImage);
-                        }
                     }
                 }
 
@@ -1268,12 +1267,15 @@ angular.module('angular-img-cropper', []).directive("imageCropper", ['$document'
                     doit = setTimeout(function(){
                         var oldImage = crop.srcImage;
                         if (typeof responsive != 'undefined' && responsive) {
-                            var resizedWidth = window.getComputedStyle(canvas.parentNode).width.split('px').join();
-                            var resizedHeight = Math.round((parseInt(resizedWidth) * oldHeight) / oldWidth);
-                            canvas.setAttribute('width', resizedWidth);
-                            canvas.setAttribute('height', resizedHeight);
-                            delete crop;
-                            crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
+                            var parent = typeof responsiveParent != 'undefined' && responsiveParent ? document.getElementById(responsiveParent) :  canvas.parentNode;
+                            var newWidth = window.getComputedStyle(parent).width.split('px').join();
+                            if (newWidth != 'auto' || newWidth != '100%') {
+                                var newHeight = Math.round((parseInt(newWidth) * oldHeight) / oldWidth);
+                                canvas.setAttribute('width', newWidth);
+                                canvas.setAttribute('height', newHeight);
+                                delete crop;
+                                crop = new ImageCropper(canvas, canvas.width / 2 - width / 2, canvas.height / 2 - height / 2, width, height, keepAspect, touchRadius);
+                            }
                             if (typeof oldImage != 'undefined' && oldImage) {
                                 crop.setImage(oldImage);
                             }
