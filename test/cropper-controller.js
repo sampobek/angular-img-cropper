@@ -1,4 +1,4 @@
-angular.module('app').controller("ImageCropperCtrl",[ '$scope', function($scope) 
+angular.module('app').controller("ImageCropperCtrl",[ '$scope', function($scope)
 {
         $scope.bounds = {};
         $scope.cropper = {};
